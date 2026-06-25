@@ -39,4 +39,4 @@ export type MoveToken = string
 export const VALID_FACES = new Set<string>(['U', 'D', 'F', 'B', 'L', 'R'])
 
 /** Regex for valid move tokens */
-export const MOVE_TOKEN_RE = /^[A-Za-z][2']?$/
+export const MOVE_TOKEN_RE = /^[UDFBLR][2']?$/
