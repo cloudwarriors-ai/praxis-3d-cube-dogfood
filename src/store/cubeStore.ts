@@ -89,6 +89,7 @@ export function cubeReducer(state: AppState, action: AppAction): AppState {
     }
 
     case 'BEGIN_SOLVE': {
+      if (state.isSolving) return state // re-entrancy guard
       if (isSolved(state.cube)) return state
 
       try {
