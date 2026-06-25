@@ -22,7 +22,9 @@ test('move-history panel is visible and within viewport on mobile', async ({ pag
   const box = await list.boundingBox()
   expect(box, 'history-list should have a bounding box').not.toBeNull()
   const viewport = page.viewportSize()!
-  expect(box!.height, 'history-list height should be > 0').toBeGreaterThan(0)
+  // Must be tall enough to actually show content — not clipped to its borders.
+  // Clean layout renders ~80–120px; a clipped panel collapses to a few px.
+  expect(box!.height, 'history-list must have a usable (non-clipped) height').toBeGreaterThanOrEqual(40)
   expect(box!.width, 'history-list width should be > 0').toBeGreaterThan(0)
   expect(box!.y, 'history-list top should be inside the viewport').toBeLessThan(viewport.height)
   expect(box!.x, 'history-list left should be inside the viewport').toBeLessThan(viewport.width)
@@ -36,5 +38,5 @@ test('scramble then history is visible/scrollable on mobile', async ({ page }) =
   const list = page.getByTestId('history-list')
   await expect(list).toBeVisible()
   const box = await list.boundingBox()
-  expect(box!.height, 'history-list height should be > 0 after scramble').toBeGreaterThan(0)
+  expect(box!.height, 'history-list must have a usable (non-clipped) height after scramble').toBeGreaterThanOrEqual(40)
 })

@@ -1,0 +1,11 @@
+diff --git a/src/cube/state.ts b/src/cube/state.ts
+index 3720f8c..1b40cfa 100644
+--- a/src/cube/state.ts
++++ b/src/cube/state.ts
+@@ -61,5 +61,5 @@ export function getFaceSolvedColor(face: keyof CubeState): FaceColor {
+ 
+ /** Return a map of face -> solved color */
+ export function getSolvedColorMap(): Record<keyof CubeState, FaceColor> {
+-  return { ...FACE_SOLVED_COLORS }
++  return { ...FACE_SOLVED_COLORS, R: 'B' }
+ }

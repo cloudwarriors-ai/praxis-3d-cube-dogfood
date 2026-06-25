@@ -1,0 +1,97 @@
+{
+  "$schema_note": "Machine-readable defect catalog for the Praxis cube dogfood harness. Each code defect maps to one unified-diff patch under defects/ that introduces a real, test-caught bug. The 'vague' entry has no patch; the harness files it to exercise the needs-info path.",
+  "baseline_commit_message": "Clean baseline: 3D cube app (Vite+React+TS+Three.js), 56 unit tests, 12 e2e",
+  "defects": [
+    {
+      "id": "01-solver-invalid-state",
+      "file": "defects/01-solver-invalid-state.patch",
+      "title": "Solver returns an invalid final state for scrambles",
+      "summary": "invertMoves drops the sequence reversal, so the solution is applied in the wrong order and the cube is not solved for non-commuting scrambles.",
+      "kind": "code-bug",
+      "lane": "devrelay",
+      "praxis_risk_tier": "R2",
+      "affected_paths": ["src/cube/moves.ts"],
+      "failing_test": "vitest: solve > solves scramble with seed=42 (and other seeds)",
+      "verify_cmd": "npm test -- src/cube",
+      "expected_fix_summary": "Restore reversal: invert each move AND reverse the sequence order."
+    },
+    {
+      "id": "02-scramble-illegal-moves",
+      "file": "defects/02-scramble-illegal-moves.patch",
+      "title": "Move validation accepts illegal move tokens",
+      "summary": "MOVE_TOKEN_RE is widened to any letter, so tokens like 'X' or 'M' pass validation and can corrupt cube state.",
+      "kind": "validation-bug",
+      "lane": "autopilot",
+      "praxis_risk_tier": "R2",
+      "affected_paths": ["src/cube/types.ts"],
+      "failing_test": "vitest: move validation > validateMoveToken throws for illegal token \"X\"/\"Q\"/\"M\"",
+      "verify_cmd": "npm test -- src/cube",
+      "expected_fix_summary": "Restrict the token regex to the six valid faces [UDFBLR] with optional 2 or ' modifier."
+    },
+    {
+      "id": "03-autosolve-double-click",
+      "file": "defects/03-autosolve-double-click.patch",
+      "title": "Auto-solve can be re-triggered and duplicates moves",
+      "summary": "The BEGIN_SOLVE re-entrancy guard is removed, so a second click while solving rebuilds the solution and rewinds progress, duplicating/replaying moves.",
+      "kind": "ui-state-bug",
+      "lane": "devrelay",
+      "praxis_risk_tier": "R2",
+      "affected_paths": ["src/store/cubeStore.ts"],
+      "failing_test": "vitest: re-entrancy guard > a second BEGIN_SOLVE while solving is a no-op",
+      "verify_cmd": "npm test -- src/store",
+      "expected_fix_summary": "Re-add the guard: BEGIN_SOLVE returns state unchanged when state.isSolving is true."
+    },
+    {
+      "id": "04-mobile-layout-clip",
+      "file": "defects/04-mobile-layout-clip.patch",
+      "title": "Mobile layout clips the move-history panel",
+      "summary": "At the phone breakpoint the move-history list collapses to zero height with hidden overflow, so the panel is not visible on mobile.",
+      "kind": "frontend-layout-bug",
+      "lane": "autopilot",
+      "praxis_risk_tier": "R2",
+      "affected_paths": ["src/index.css"],
+      "failing_test": "playwright: mobile.spec.ts > move-history panel is visible and within viewport on mobile",
+      "verify_cmd": "npm run test:e2e -- mobile.spec.ts",
+      "expected_fix_summary": "Restore a non-zero, scrollable max-height for .move-history__list at the mobile breakpoint."
+    },
+    {
+      "id": "05-reset-color-inconsistent",
+      "file": "defects/05-reset-color-inconsistent.patch",
+      "title": "Cube face colors are inconsistent after reset",
+      "summary": "getSolvedColorMap reports the wrong color for the R face, so the solved-color reference disagrees with the actual reset cube state.",
+      "kind": "rendering-state-bug",
+      "lane": "devrelay",
+      "praxis_risk_tier": "R2",
+      "affected_paths": ["src/cube/state.ts"],
+      "failing_test": "vitest: reset color consistency > scrambled then reset returns to exact solved colors",
+      "verify_cmd": "npm test -- src/cube",
+      "expected_fix_summary": "getSolvedColorMap must return FACE_SOLVED_COLORS unchanged (R = 'G')."
+    },
+    {
+      "id": "06-stale-readme-command",
+      "file": "defects/06-stale-readme-command.patch",
+      "title": "README documents a stale validation command",
+      "summary": "README references 'npm run lint:all', which does not exist in package.json.",
+      "kind": "docs-config-bug",
+      "lane": "autopilot",
+      "praxis_risk_tier": "R1",
+      "affected_paths": ["README.md"],
+      "failing_test": "vitest: readme-command consistency > package.json contains all scripts referenced in README",
+      "verify_cmd": "npm test -- src/cube",
+      "expected_fix_summary": "Point the README at the real script name ('npm run lint')."
+    },
+    {
+      "id": "07-vague-cube-broken",
+      "file": null,
+      "title": "Cube is broken",
+      "summary": "Deliberately vague report with no repro steps, expected/actual, or component. Has no patch; the harness files it to exercise the Praxis needs-info path (R5 -> no dispatch).",
+      "kind": "vague-no-patch",
+      "lane": "none",
+      "praxis_risk_tier": "R5",
+      "affected_paths": [],
+      "failing_test": null,
+      "verify_cmd": null,
+      "expected_fix_summary": "Not applicable — Praxis should request clarification and not dispatch until the reporter adds repro_steps, expected, actual, and component."
+    }
+  ]
+}

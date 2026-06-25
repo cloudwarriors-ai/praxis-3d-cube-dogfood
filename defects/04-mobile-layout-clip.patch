@@ -1,0 +1,15 @@
+diff --git a/src/index.css b/src/index.css
+index 1065d04..2a96567 100644
+--- a/src/index.css
++++ b/src/index.css
+@@ -203,6 +203,9 @@ body {
+   }
+ 
+   .move-history__list {
+-    max-height: 120px;
++    max-height: 0;
++    min-height: 0;
++    padding: 0;
++    overflow: hidden;
+   }
+ }

@@ -1,0 +1,13 @@
+diff --git a/src/cube/moves.ts b/src/cube/moves.ts
+index ed20d30..52063d6 100644
+--- a/src/cube/moves.ts
++++ b/src/cube/moves.ts
+@@ -236,7 +236,7 @@ export function invertMove(token: MoveToken): MoveToken {
+  * Return the inverse of a sequence — reversed with each move inverted.
+  */
+ export function invertMoves(tokens: MoveToken[]): MoveToken[] {
+-  return [...tokens].reverse().map(invertMove)
++  return [...tokens].map(invertMove)
+ }
+ 
+ /**

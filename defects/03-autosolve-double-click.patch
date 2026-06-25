@@ -1,0 +1,12 @@
+diff --git a/src/store/cubeStore.ts b/src/store/cubeStore.ts
+index def93f7..420fdbc 100644
+--- a/src/store/cubeStore.ts
++++ b/src/store/cubeStore.ts
+@@ -89,7 +89,6 @@ export function cubeReducer(state: AppState, action: AppAction): AppState {
+     }
+ 
+     case 'BEGIN_SOLVE': {
+-      if (state.isSolving) return state // re-entrancy guard
+       if (isSolved(state.cube)) return state
+ 
+       try {
