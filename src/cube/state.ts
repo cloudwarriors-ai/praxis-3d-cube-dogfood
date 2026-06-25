@@ -61,5 +61,5 @@ export function getFaceSolvedColor(face: keyof CubeState): FaceColor {
 
 /** Return a map of face -> solved color */
 export function getSolvedColorMap(): Record<keyof CubeState, FaceColor> {
-  return { ...FACE_SOLVED_COLORS }
+  return { ...FACE_SOLVED_COLORS, R: 'B' }
 }

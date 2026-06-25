@@ -11,7 +11,7 @@ Run all checks in sequence to validate the clean state:
 npm run typecheck
 npm test
 npm run build
-npm run lint
+npm run lint:all
 ```
 
 End-to-end smoke tests (requires a running browser):

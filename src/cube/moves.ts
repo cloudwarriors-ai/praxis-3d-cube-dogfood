@@ -236,7 +236,7 @@ export function invertMove(token: MoveToken): MoveToken {
  * Return the inverse of a sequence — reversed with each move inverted.
  */
 export function invertMoves(tokens: MoveToken[]): MoveToken[] {
-  return [...tokens].reverse().map(invertMove)
+  return [...tokens].map(invertMove)
 }
 
 /**
