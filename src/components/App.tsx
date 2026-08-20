@@ -7,9 +7,9 @@ import { CubeCanvas } from './CubeCanvas.js'
 import { Controls } from './Controls.js'
 import { MoveHistory } from './MoveHistory.js'
 import { cubeReducer, initialState } from '../store/cubeStore.js'
+import { initialScrambleSeed } from '../cube/scramble.js'
 
-// Stable seed incremented per scramble so each press gives a different scramble
-let seedCounter = Date.now() % 100000
+let seedCounter = initialScrambleSeed(Date.now())
 
 export function App() {
   const [state, dispatch] = useReducer(cubeReducer, undefined, initialState)

@@ -19,6 +19,7 @@ import {
   cloneCube,
 } from '../index.js'
 import { validateMoveToken } from '../moves.js'
+import { initialScrambleSeed } from '../scramble.js'
 
 // ────────────────────────────────────────────────────────────
 // 1. Solved cube detection
@@ -203,6 +204,30 @@ describe('reset color consistency', () => {
     expect(cube.B.every(c => c === 'O')).toBe(true)
     expect(cube.L.every(c => c === 'B')).toBe(true)
     expect(cube.R.every(c => c === 'G')).toBe(true)
+  })
+})
+
+// ────────────────────────────────────────────────────────────
+// 7. initialScrambleSeed avoids duplicate-first-scramble bug (#40)
+// ────────────────────────────────────────────────────────────
+describe('initialScrambleSeed', () => {
+  it('timestamps 100 000 ms apart produce different seeds', () => {
+    const a = initialScrambleSeed(1_700_000_000_000)
+    const b = initialScrambleSeed(1_700_000_100_000)
+    expect(a).not.toBe(b)
+  })
+
+  it('consecutive increments yield distinct seeds', () => {
+    const base = initialScrambleSeed(1_700_000_000_000)
+    expect(base + 1).not.toBe(base)
+    expect(base + 1).not.toBe(base + 2)
+  })
+
+  it('returns a non-negative 32-bit integer', () => {
+    const seed = initialScrambleSeed(Date.now())
+    expect(seed).toBeGreaterThanOrEqual(0)
+    expect(seed).toBeLessThan(2 ** 32)
+    expect(Number.isInteger(seed)).toBe(true)
   })
 })
 

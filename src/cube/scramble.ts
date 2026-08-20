@@ -48,6 +48,11 @@ export function generateScramble(seed: number, length = 20): MoveToken[] {
   return moves
 }
 
+/** Derive a non-negative 32-bit seed from a millisecond timestamp. */
+export function initialScrambleSeed(nowMs: number): number {
+  return nowMs >>> 0
+}
+
 /**
  * Validate an array of move tokens. Throws on first illegal token.
  */
