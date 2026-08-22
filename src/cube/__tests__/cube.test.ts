@@ -229,6 +229,17 @@ describe('initialScrambleSeed', () => {
     expect(seed).toBeLessThan(2 ** 32)
     expect(Number.isInteger(seed)).toBe(true)
   })
+
+  it('timestamps exactly 2**32 ms apart produce different seeds', () => {
+    const t = 1_700_000_000_000
+    const a = initialScrambleSeed(t)
+    const b = initialScrambleSeed(t + 2 ** 32)
+    expect(a).not.toBe(b)
+    expect(a).toBeGreaterThanOrEqual(0)
+    expect(a).toBeLessThan(2 ** 32)
+    expect(b).toBeGreaterThanOrEqual(0)
+    expect(b).toBeLessThan(2 ** 32)
+  })
 })
 
 // ────────────────────────────────────────────────────────────

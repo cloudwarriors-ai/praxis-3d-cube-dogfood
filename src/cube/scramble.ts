@@ -50,7 +50,8 @@ export function generateScramble(seed: number, length = 20): MoveToken[] {
 
 /** Derive a non-negative 32-bit seed from a millisecond timestamp. */
 export function initialScrambleSeed(nowMs: number): number {
-  return nowMs >>> 0
+  // XOR high and low 32-bit halves so timestamps 2^32 ms (~49.7 days) apart don't collide
+  return (nowMs ^ Math.floor(nowMs / 2 ** 32)) >>> 0
 }
 
 /**
