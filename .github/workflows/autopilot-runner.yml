@@ -1,0 +1,43 @@
+name: "Autopilot: Runner"
+
+# praxis-3d-cube-dogfood caller for the shared org reusable-autopilot-runner.
+# Dispatched by autopilot-intake.yml when an issue is labeled AUTOFIX: Ready.
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number to fix'
+        required: true
+        type: string
+      issue_title:
+        description: 'Issue title'
+        required: false
+        type: string
+        default: ''
+      track:
+        description: 'Track: bugs or features'
+        required: true
+        type: string
+      base:
+        description: 'Base branch'
+        required: true
+        type: string
+        default: 'dev'
+      head:
+        description: 'Head branch (autofix/issue-<id>)'
+        required: true
+        type: string
+
+jobs:
+  run:
+    uses: cloudwarriors-ai/.github/.github/workflows/reusable-autopilot-runner.yml@codex/preview-domain
+    with:
+      issue_number: ${{ inputs.issue_number }}
+      issue_title: ${{ inputs.issue_title }}
+      track: ${{ inputs.track }}
+      base: ${{ inputs.base }}
+      head: ${{ inputs.head }}
+      max_claude_turns: 30
+      max_rlm_cost: 2
+    secrets: inherit
