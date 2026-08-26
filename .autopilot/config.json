@@ -18,6 +18,7 @@
   "healthEndpoint": "/",
   "containerName": "cube-preview",
   "previewDeploy": true,
+  "previewGate": true,
   "mergeRequirements": {
     "minApprovals": 0,
     "requiredChecks": [],

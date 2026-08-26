@@ -1,0 +1,29 @@
+name: "Preview: Teardown"
+
+# Reclaims a preview the autopilot runner deliberately left standing.
+#
+# With `"previewGate": true` in .autopilot/config.json, a FEATURE-track run stops
+# before teardown and auto-merge and hands the preview to a human (see the
+# `<!-- praxis:preview ... -->` comment on the issue). Praxis dispatches this
+# workflow to tear that preview down once the verdict is in — or once the hold
+# expires. It is also the manual escape hatch: run it from the Actions tab with
+# the issue number.
+#
+# NOTE: pinned to @codex/preview-gate-hold, not @main, because
+# reusable-preview-teardown.yml does not exist on cloudwarriors-ai/.github@main
+# yet. Repin to @main once that PR merges.
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue_number:
+        description: 'Issue number whose preview should be torn down'
+        required: true
+        type: string
+
+jobs:
+  teardown:
+    uses: cloudwarriors-ai/.github/.github/workflows/reusable-preview-teardown.yml@codex/preview-gate-hold
+    with:
+      issue_number: ${{ inputs.issue_number }}
+    secrets: inherit
