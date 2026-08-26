@@ -7,8 +7,14 @@
   "testCommand": "npm ci && npm run typecheck && npm test && npm run build",
   "appTestCommand": "",
   "dbMigrateCommand": "",
-  "testPatterns": ["src/**/*.test.ts", "src/**/*.test.tsx", "e2e/*.spec.ts"],
-  "assertionPatterns": ["expect("],
+  "testPatterns": [
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx",
+    "e2e/*.spec.ts"
+  ],
+  "assertionPatterns": [
+    "expect("
+  ],
   "healthEndpoint": "/",
   "containerName": "cube-preview",
   "previewDeploy": true,
@@ -19,6 +25,7 @@
   },
   "validation": {
     "state": "exempt",
+    "ttl_until": "2026-11-30T00:00:00Z",
     "reason": "Static Vite app; proof is typecheck + vitest + build. Preview deploy is the subject of the Praxis preview-gate baseline (autoMerge stays off so dev does not move during the baseline)."
   }
 }
