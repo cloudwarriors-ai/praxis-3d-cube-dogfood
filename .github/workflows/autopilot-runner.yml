@@ -31,7 +31,7 @@ on:
 
 jobs:
   run:
-    uses: cloudwarriors-ai/.github/.github/workflows/reusable-autopilot-runner.yml@codex/preview-domain
+    uses: cloudwarriors-ai/.github/.github/workflows/reusable-autopilot-runner.yml@main
     with:
       issue_number: ${{ inputs.issue_number }}
       issue_title: ${{ inputs.issue_title }}
