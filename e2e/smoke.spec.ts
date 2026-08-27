@@ -28,6 +28,11 @@ test('scramble changes status and populates move history', async ({ page }) => {
   await expect(moves).toHaveCount(20)
 })
 
+test('preview-gate caption is visible', async ({ page }) => {
+  await expect(page.getByTestId('preview-caption')).toBeVisible()
+  await expect(page.getByTestId('preview-caption')).toHaveText('preview-gate harness: hold')
+})
+
 test('auto-solve returns the cube to solved', async ({ page }) => {
   await page.getByTestId('btn-scramble').click()
   await expect(page.getByTestId('solve-status')).toHaveText(/scrambled/i)
