@@ -30,7 +30,7 @@ test('scramble changes status and populates move history', async ({ page }) => {
 
 test('preview-gate caption is visible', async ({ page }) => {
   await expect(page.getByTestId('preview-caption')).toBeVisible()
-  await expect(page.getByTestId('preview-caption')).toHaveText('preview-gate harness: hold')
+  await expect(page.getByTestId('preview-caption')).toHaveText('preview-gate harness: capacity-1 20260827T164600Z')
 })
 
 test('auto-solve returns the cube to solved', async ({ page }) => {
