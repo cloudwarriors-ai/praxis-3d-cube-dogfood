@@ -42,6 +42,19 @@ fi
 t0=$(date +%s)
 log() { printf '[%s +%ss] %s\n' "$NAME" "$(( $(date +%s) - t0 ))" "$*"; }
 
+# Capacity belt (Praxis owns the bound — Repo.preview_capacity; this catches manual or
+# out-of-band runs). Counts this repo's OTHER standing previews by label; a redeploy of the
+# same issue replaces in place and must not count itself. Unset/0 = no belt.
+CAPACITY="${PREVIEW_CAPACITY:-0}"
+if [ "$CAPACITY" -gt 0 ] 2>/dev/null; then
+  OTHERS=$(docker ps --filter "label=preview.repo=cloudwarriors-ai/praxis-3d-cube-dogfood" --format '{{.Label "preview.issue"}}' | grep -vx "$ISSUE" | sort -u | wc -l)
+  if [ "$OTHERS" -ge "$CAPACITY" ]; then
+    echo "ERROR: preview capacity reached (${OTHERS}/${CAPACITY} other previews standing) — refusing to deploy issue ${ISSUE}" >&2
+    exit 1
+  fi
+  log "0/5 capacity ${OTHERS}/${CAPACITY} other previews standing"
+fi
+
 log "1/5 clean previous preview (mode=${MODE})"
 docker rm -f "$NAME" >/dev/null 2>&1 || true
 tailscale serve --https="$PORT" off >/dev/null 2>&1 || true
