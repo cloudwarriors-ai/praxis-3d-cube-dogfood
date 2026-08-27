@@ -28,6 +28,7 @@ export interface AppState {
   solveStatus: SolveStatus
   isSolving: boolean
   errorMessage: string | null
+  moveCount: number
 }
 
 export type AppAction =
@@ -51,6 +52,7 @@ export function initialState(): AppState {
     solveStatus: 'solved',
     isSolving: false,
     errorMessage: null,
+    moveCount: 0,
   }
 }
 
@@ -73,6 +75,7 @@ export function cubeReducer(state: AppState, action: AppAction): AppState {
         solveStatus: 'scrambled',
         isSolving: false,
         errorMessage: null,
+        moveCount: 0,
       }
     }
 
@@ -85,6 +88,7 @@ export function cubeReducer(state: AppState, action: AppAction): AppState {
         cube,
         history,
         solveStatus: solved ? 'solved' : state.solveStatus,
+        moveCount: state.moveCount + 1,
       }
     }
 
@@ -128,6 +132,7 @@ export function cubeReducer(state: AppState, action: AppAction): AppState {
         solutionStep,
         solveStatus: done ? 'solved' : 'solving',
         isSolving: !done,
+        moveCount: state.moveCount + 1,
       }
     }
 

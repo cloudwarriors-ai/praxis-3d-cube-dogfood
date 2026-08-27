@@ -95,6 +95,7 @@ export function App() {
           <MoveHistory
             history={state.history}
             solveStatus={state.solveStatus}
+            moveCount={state.moveCount}
           />
           {state.errorMessage && (
             <div className="app__error" data-testid="error-message">
