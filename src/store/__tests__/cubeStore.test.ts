@@ -43,6 +43,40 @@ describe('cubeReducer basics', () => {
   })
 })
 
+describe('moveCount badge counter', () => {
+  it('moveCount initializes to 0', () => {
+    expect(initialState().moveCount).toBe(0)
+  })
+
+  it('moveCount resets to 0 after SCRAMBLE', () => {
+    let s = scrambled()
+    s = cubeReducer(s, { type: 'APPLY_MOVE', token: 'U' })
+    expect(s.moveCount).toBe(1)
+    const after = cubeReducer(s, { type: 'SCRAMBLE', seed: 99 })
+    expect(after.moveCount).toBe(0)
+  })
+
+  it('moveCount resets to 0 after RESET', () => {
+    let s = scrambled()
+    s = cubeReducer(s, { type: 'APPLY_MOVE', token: 'U' })
+    expect(cubeReducer(s, { type: 'RESET' }).moveCount).toBe(0)
+  })
+
+  it('moveCount increments on APPLY_MOVE', () => {
+    let s = scrambled()
+    s = cubeReducer(s, { type: 'APPLY_MOVE', token: 'U' })
+    s = cubeReducer(s, { type: 'APPLY_MOVE', token: 'R' })
+    expect(s.moveCount).toBe(2)
+  })
+
+  it('moveCount increments on STEP_SOLVE', () => {
+    let s = cubeReducer(scrambled(), { type: 'BEGIN_SOLVE' })
+    s = cubeReducer(s, { type: 'STEP_SOLVE' })
+    s = cubeReducer(s, { type: 'STEP_SOLVE' })
+    expect(s.moveCount).toBe(2)
+  })
+})
+
 describe('re-entrancy guard (defect 03-autosolve-double-click)', () => {
   it('a second BEGIN_SOLVE while solving is a no-op and does not rewind progress', () => {
     // Scramble, begin solving, then step partway through the solution.

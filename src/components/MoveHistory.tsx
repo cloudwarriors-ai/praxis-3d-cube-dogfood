@@ -5,9 +5,10 @@
 interface Props {
   history: string[]
   solveStatus: string
+  moveCount: number
 }
 
-export function MoveHistory({ history, solveStatus }: Props) {
+export function MoveHistory({ history, solveStatus, moveCount }: Props) {
   const statusLabel: Record<string, string> = {
     solved: 'Solved',
     scrambled: `Scrambled (${history.length} moves)`,
@@ -21,6 +22,9 @@ export function MoveHistory({ history, solveStatus }: Props) {
     <div className="move-history" data-testid="move-history">
       <div className="move-history__status" data-testid="solve-status">
         {label}
+      </div>
+      <div className="move-history__badge" data-testid="move-count">
+        Moves: {moveCount}
       </div>
       <div className="move-history__list" data-testid="history-list">
         {history.length === 0 ? (
