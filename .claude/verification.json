@@ -1,0 +1,32 @@
+{
+  "$comment": "Adopted verification profile for the Praxis cube dogfood repo. Every declared command passed on origin/dev commit 5c6ea32 on 2026-08-28 after installing the Playwright-pinned Chromium runtime. Preview deployment is intentionally excluded because it mutates remote Docker/Tailscale state.",
+  "fast": [
+    { "name": "typecheck", "command": "npm run typecheck" },
+    { "name": "unit-tests", "command": "npm test" },
+    { "name": "lint", "command": "npm run lint" }
+  ],
+  "module": {
+    "cube-domain": [
+      { "name": "typecheck", "command": "npm run typecheck" },
+      { "name": "cube-tests", "command": "npm test -- src/cube" }
+    ],
+    "app-state": [
+      { "name": "typecheck", "command": "npm run typecheck" },
+      { "name": "store-tests", "command": "npm test -- src/store" }
+    ],
+    "frontend": [
+      { "name": "typecheck", "command": "npm run typecheck" },
+      { "name": "lint", "command": "npm run lint" },
+      { "name": "production-build", "command": "npm run build" },
+      { "name": "browser-tests", "command": "npm run test:e2e" }
+    ]
+  },
+  "full": [
+    { "name": "typecheck", "command": "npm run typecheck" },
+    { "name": "unit-tests", "command": "npm test" },
+    { "name": "lint", "command": "npm run lint" },
+    { "name": "production-build", "command": "npm run build" },
+    { "name": "browser-tests", "command": "npm run test:e2e" },
+    { "name": "production-dependency-audit", "command": "npm audit --omit=dev --audit-level=moderate" }
+  ]
+}
