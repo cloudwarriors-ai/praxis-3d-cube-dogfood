@@ -83,7 +83,7 @@ export function App() {
         <div className="app__canvas-area">
           <CubeCanvas cubeState={state.cube} />
           <p className="preview-gate-caption" data-testid="preview-caption">
-            preview-gate harness: hold
+            preview-gate harness: hold 20260827T124416Z
           </p>
         </div>
         <aside className="app__sidebar">
