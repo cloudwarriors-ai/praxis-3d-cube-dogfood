@@ -1,6 +1,9 @@
 {
-  "$comment": "Adopted verification profile for the Praxis cube dogfood repo. Every declared command passed on origin/dev commit 5c6ea32 on 2026-08-28 after installing the Playwright-pinned Chromium runtime. FAST is intentionally undeclared because no cheap runtime heartbeat exists. Preview deployment is intentionally excluded because it mutates remote Docker/Tailscale state.",
+  "$comment": "Adopted verification profile for the Praxis cube dogfood repo. The historical application baseline passed on origin/dev commit 5c6ea32 on 2026-08-28 after installing the Playwright-pinned Chromium runtime. Current-revision evidence for this evolving command set belongs in .verification/ (gitignored). FAST is intentionally undeclared because no cheap runtime heartbeat exists. Retired preview deployment is intentionally excluded because it mutates remote Docker/Tailscale state.",
   "module": {
+    "automation-contract": [
+      { "name": "repository-automation-contract", "command": "npm run verify:contract" }
+    ],
     "cube-domain": [
       { "name": "typecheck", "command": "npm run typecheck" },
       { "name": "cube-tests", "command": "npm test -- src/cube" }
@@ -17,6 +20,7 @@
     ]
   },
   "full": [
+    { "name": "repository-automation-contract", "command": "npm run verify:contract" },
     { "name": "typecheck", "command": "npm run typecheck" },
     { "name": "unit-tests", "command": "npm test" },
     { "name": "lint", "command": "npm run lint" },

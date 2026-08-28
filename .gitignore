@@ -4,5 +4,6 @@ dist/
 playwright-report/
 test-results/
 coverage/
+.verification/
 *.local
 .env
