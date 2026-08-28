@@ -8,14 +8,14 @@ under `docs/adoption/` records the evidence and gaps found when this contract wa
 
 The repository is a deliberately small dogfood application for exercising engineering
 orchestration. Its product surface is a client-only 3D Rubik's Cube built with React,
-TypeScript, Vite, and Three.js. Its harness surface supplies deterministic defect patches,
-GitHub issue intake, and per-issue previews so automation can be evaluated against real,
-test-caught changes.
+TypeScript, Vite, and Three.js. Its harness surface supplies deterministic defect patches
+so automation can be evaluated against real, test-caught changes. Retired GitHub Autopilot
+and preview assets remain only as reference material.
 
 The application is not a general cube-solving service, a persistence system, or a
-production release orchestrator. The existing GitHub Autopilot workflow is a separate
-legacy automation path; this specification does not imply that it is the AI Battlestation
-or that either automation path is ready for unattended work.
+production release orchestrator. The retired GitHub Autopilot assets are not the AI
+Battlestation. Battlestation authority begins only after this repository's committed
+contract is explicitly bound and its preflight passes.
 
 ## 2. Accepted product behavior
 
@@ -50,8 +50,8 @@ The repository has four application modules:
 
 `src/cube/__tests__/` and `src/store/__tests__/` provide unit coverage. `e2e/` owns real
 browser behavior. `defects/` is test-harness data, not application runtime code.
-`.autopilot/`, `.github/workflows/autopilot-*`, and the preview scripts belong to the
-pre-existing GitHub Autopilot harness. They are not reused implicitly by new automation.
+`.autopilot/` and the preview scripts are inactive artifacts from the retired GitHub
+Autopilot harness. They are not reused implicitly by new automation.
 
 ## 4. State and data contracts
 
@@ -76,25 +76,22 @@ source, task text, logs, preview URLs, Git remotes, or artifacts.
 and expected fixes. Defect branches may intentionally be red; `dev` is the clean
 integration baseline and must be verified before new experiments are cut from it.
 
-The existing GitHub intake workflow reacts to explicit labels, `/autofix`, or manual
-dispatch. The reusable runner is external to this repository. Repository configuration
-keeps auto-merge off and requires a human preview verdict for its feature track.
+The repository no longer contains the legacy GitHub intake, AI runner, or preview-teardown
+workflows. This removes their public trigger, PAT dispatch, inherited-secret, mutable
+downstream-code, and production-base paths from the accepted `dev` state. Repository-level
+workflow disablement prevents the default branch's older copies from running before a
+separate human-owned production promotion retires them from `main`.
 
-The comment trigger is not authorization-safe. Because the repository and issues are
-public, any GitHub user can post `/autofix`; the workflow checks neither actor identity nor
-author association before using an organization `WORKFLOW_PAT` to dispatch the runner.
-That runner is referenced by a mutable feature-branch name and receives inherited secrets.
-Repository Actions defaults grant write permission and pull-request approval, and the
-organization currently makes AI-provider and workflow-PAT secrets available to all
-repositories. Kill switches, track labels, and concurrency limits reduce operations but
-do not authenticate the triggering user. This existing automation path is NOT READY and
-must not be used for new unattended authority.
+`battlestation.json` is the repository-owned autonomous-development contract. It uses
+honest `advisory-v1` governance because this repository has no server-enforced rulesets.
+It allows verified automatic integration to `dev` only, declares no deployment or
+rollback authority, denies local-model write access, and keeps production promotion
+human-only.
 
-Per-issue preview deployment builds the exact requested commit into a static nginx
-container. Tailnet exposure is the default: the container binds loopback and Tailscale
-Serve publishes it only to tailnet members. A legacy public Traefik mode remains present
-but is not the accepted mode for held previews. Teardown is idempotent and removes the
-Serve route, container, images, and temporary workspace for the issue.
+The retired preview scripts can build an exact commit into a static nginx container and
+publish it to tailnet members. They are not part of Battlestation authority or the current
+automated workflow. Their credential-handling defects remain documented so they are not
+reactivated accidentally.
 
 ## 6. Verification contract
 
@@ -105,6 +102,8 @@ Serve route, container, images, and temporary workspace for the issue.
   overstate their evidence.
 - MODULE `cube-domain` proves the pure cube engine.
 - MODULE `app-state` proves the reducer and application state transitions.
+- MODULE `automation-contract` proves the `dev`/`main` authority boundary, required CI
+  check availability for both pull-request bases, and retirement of legacy workflows.
 - MODULE `frontend` proves build plus desktop/mobile browser behavior and marks the browser
   check for browser-proof routing.
 - FULL repeats repository checks, real browser tests, and the production-dependency audit.
@@ -116,10 +115,11 @@ they mutate remote Docker and Tailscale state.
 
 ## 7. Branch, integration, and release state
 
-`dev` is the integration branch and `main` is the production branch. As observed during
-adoption, neither branch has server-enforced protection. The repository has no general
-CI workflow that runs its validation commands on every pull request. The legacy Autopilot
-configuration declares zero required checks and zero approvals and keeps auto-merge off.
+`dev` is the integration branch and `main` is the production branch. Neither branch has
+server-enforced protection. The `verify` workflow runs the declared typecheck, unit,
+lint, build, Chromium browser, and production-dependency checks on pull requests to `dev`
+and again on the exact merged `dev` commit. The advisory contract names that check, but
+GitHub does not enforce it; Battlestation must verify the exact SHA itself.
 
 Live GitHub reports that the repository is public and that Actions defaults grant write
 permission and pull-request approval. These facts mean a green local or agent run is
@@ -146,11 +146,9 @@ toolchain currently reports 11 audit findings, including 2 critical findings. Th
 not shipped to the static browser artifact, but they remain relevant to CI and agent
 execution and must be remediated as a separate dependency change.
 
-The larger current security defect is the public `/autofix` comment path described in §5.
-It can cross from an unauthenticated public commenter to a PAT-backed dispatch and then a
-mutable reusable workflow with inherited organization secrets. No Battlestation dogfood
-may rely on or expand that path until the trigger is authorized, workflow source is pinned
-immutably, token permissions are least-privilege, and secret availability is narrowed.
+The former public `/autofix` and privileged legacy runner paths are retired from `dev` and
+disabled at repository level. Battlestation does not use their scripts, PAT, inherited
+secrets, reusable workflows, or preview infrastructure.
 
 ## 9. Observability
 
@@ -161,11 +159,10 @@ preview-status API in this repository.
 
 ## 10. Known limitations
 
-- Exact current state is not covered by server-enforced branch protection or general CI.
-- The public `/autofix` trigger lacks caller authorization and reaches PAT-backed dispatch;
-  the mutable shared AI runner inherits broadly available organization secrets and default
-  write/PR-approval authority. This path is NOT READY.
-- The legacy GitHub AI runner also has no repository-local behavioral evaluation contract.
+- Exact current state is not covered by server-enforced branch protection; the declared
+  CI gate is advisory and Battlestation must enforce exact-SHA evidence itself.
+- Organization secrets and write-capable Actions defaults remain configured outside this
+  repository even though the retired workflows that consumed them are disabled.
 - Preview clone authentication can persist a credential value in temporary Git metadata.
 - Development-only dependencies have known high/critical audit findings.
 - The build emits a large-chunk warning for the approximately 616 kB JavaScript bundle.

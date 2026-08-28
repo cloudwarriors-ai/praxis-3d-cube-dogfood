@@ -1,0 +1,28 @@
+{
+  "version": 2,
+  "governanceProfile": "advisory-v1",
+  "integrationBranch": "dev",
+  "productionBranch": "main",
+  "requiredChecks": [
+    "verify"
+  ],
+  "verificationCommands": [
+    "npm ci",
+    "npm run verify:contract",
+    "npm run typecheck",
+    "npm test",
+    "npm run lint",
+    "npm run build",
+    "npx playwright install chromium",
+    "npm run test:e2e",
+    "npm audit --omit=dev --audit-level=moderate"
+  ],
+  "deployment": null,
+  "rollback": null,
+  "autonomy": {
+    "autoMergeToIntegration": true,
+    "productionMerge": "human-only",
+    "localModelWriteAccess": false,
+    "securityAndReleaseDecisions": "cloud-provider-and-human"
+  }
+}
