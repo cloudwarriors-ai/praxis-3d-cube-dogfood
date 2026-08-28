@@ -1,10 +1,5 @@
 {
-  "$comment": "Adopted verification profile for the Praxis cube dogfood repo. Every declared command passed on origin/dev commit 5c6ea32 on 2026-08-28 after installing the Playwright-pinned Chromium runtime. Preview deployment is intentionally excluded because it mutates remote Docker/Tailscale state.",
-  "fast": [
-    { "name": "typecheck", "command": "npm run typecheck" },
-    { "name": "unit-tests", "command": "npm test" },
-    { "name": "lint", "command": "npm run lint" }
-  ],
+  "$comment": "Adopted verification profile for the Praxis cube dogfood repo. Every declared command passed on origin/dev commit 5c6ea32 on 2026-08-28 after installing the Playwright-pinned Chromium runtime. FAST is intentionally undeclared because no cheap runtime heartbeat exists. Preview deployment is intentionally excluded because it mutates remote Docker/Tailscale state.",
   "module": {
     "cube-domain": [
       { "name": "typecheck", "command": "npm run typecheck" },
@@ -18,7 +13,7 @@
       { "name": "typecheck", "command": "npm run typecheck" },
       { "name": "lint", "command": "npm run lint" },
       { "name": "production-build", "command": "npm run build" },
-      { "name": "browser-tests", "command": "npm run test:e2e" }
+      { "name": "browser-tests", "command": "npm run test:e2e", "browser": true }
     ]
   },
   "full": [
@@ -26,7 +21,7 @@
     { "name": "unit-tests", "command": "npm test" },
     { "name": "lint", "command": "npm run lint" },
     { "name": "production-build", "command": "npm run build" },
-    { "name": "browser-tests", "command": "npm run test:e2e" },
+    { "name": "browser-tests", "command": "npm run test:e2e", "browser": true },
     { "name": "production-dependency-audit", "command": "npm audit --omit=dev --audit-level=moderate" }
   ]
 }

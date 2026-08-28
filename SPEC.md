@@ -64,10 +64,11 @@ letters with an optional prime or double-turn suffix. The current solver is auth
 only for states derived from the scramble sequence retained in the reducer; arbitrary
 unknown-origin cube states are outside the accepted contract.
 
-Repository and GitHub issue metadata is INTERNAL CloudWarriors engineering data. The app
-itself handles no customer data and no secrets. GitHub, SSH, Docker, and Tailscale
-credentials belong to their external execution environments and must remain references,
-never values in source, task text, logs, preview URLs, or artifacts.
+Repository source and GitHub issue metadata are PUBLIC: the repository and its issue
+tracker are publicly visible. The app itself handles no customer data and no secrets.
+GitHub, SSH, Docker, Tailscale, and AI-provider credentials are RESTRICTED and belong to
+their external execution environments. They must remain references, never values in
+source, task text, logs, preview URLs, Git remotes, or artifacts.
 
 ## 5. Dogfood and preview contracts
 
@@ -79,6 +80,16 @@ The existing GitHub intake workflow reacts to explicit labels, `/autofix`, or ma
 dispatch. The reusable runner is external to this repository. Repository configuration
 keeps auto-merge off and requires a human preview verdict for its feature track.
 
+The comment trigger is not authorization-safe. Because the repository and issues are
+public, any GitHub user can post `/autofix`; the workflow checks neither actor identity nor
+author association before using an organization `WORKFLOW_PAT` to dispatch the runner.
+That runner is referenced by a mutable feature-branch name and receives inherited secrets.
+Repository Actions defaults grant write permission and pull-request approval, and the
+organization currently makes AI-provider and workflow-PAT secrets available to all
+repositories. Kill switches, track labels, and concurrency limits reduce operations but
+do not authenticate the triggering user. This existing automation path is NOT READY and
+must not be used for new unattended authority.
+
 Per-issue preview deployment builds the exact requested commit into a static nginx
 container. Tailnet exposure is the default: the container binds loopback and Tailscale
 Serve publishes it only to tailnet members. A legacy public Traefik mode remains present
@@ -89,10 +100,13 @@ Serve route, container, images, and temporary workspace for the issue.
 
 `.claude/verification.json` is the executable verification source of truth.
 
-- FAST proves TypeScript validity, domain/reducer behavior, and lint health.
+- FAST is intentionally undeclared. The repository has cheap static checks but no observed
+  application-start or vital-runtime heartbeat, so labeling those checks FAST would
+  overstate their evidence.
 - MODULE `cube-domain` proves the pure cube engine.
 - MODULE `app-state` proves the reducer and application state transitions.
-- MODULE `frontend` proves build plus desktop/mobile browser behavior.
+- MODULE `frontend` proves build plus desktop/mobile browser behavior and marks the browser
+  check for browser-proof routing.
 - FULL repeats repository checks, real browser tests, and the production-dependency audit.
 
 Playwright requires its pinned Chromium build. A missing browser binary is an environment
@@ -107,7 +121,10 @@ adoption, neither branch has server-enforced protection. The repository has no g
 CI workflow that runs its validation commands on every pull request. The legacy Autopilot
 configuration declares zero required checks and zero approvals and keeps auto-merge off.
 
-These facts mean a green local or agent run is evidence, not a server-enforced gate.
+Live GitHub reports that the repository is public and that Actions defaults grant write
+permission and pull-request approval. These facts mean a green local or agent run is
+evidence, not a server-enforced gate, and public event triggers require explicit caller
+authorization before they may reach any secret-bearing workflow.
 Automated integration into `dev` must remain governed by the active execution system's
 own exact-SHA checks. Promotion from `dev` to `main` is separate, human-owned release
 work; no autonomous system may merge `main`.
@@ -129,6 +146,12 @@ toolchain currently reports 11 audit findings, including 2 critical findings. Th
 not shipped to the static browser artifact, but they remain relevant to CI and agent
 execution and must be remediated as a separate dependency change.
 
+The larger current security defect is the public `/autofix` comment path described in §5.
+It can cross from an unauthenticated public commenter to a PAT-backed dispatch and then a
+mutable reusable workflow with inherited organization secrets. No Battlestation dogfood
+may rely on or expand that path until the trigger is authorized, workflow source is pinned
+immutably, token permissions are least-privilege, and secret availability is narrowed.
+
 ## 9. Observability
 
 The browser app has no telemetry or error export. Preview operations emit step logs,
@@ -139,13 +162,16 @@ preview-status API in this repository.
 ## 10. Known limitations
 
 - Exact current state is not covered by server-enforced branch protection or general CI.
-- The legacy GitHub AI runner has no repository-local behavioral evaluation contract and
-  is NOT READY under the foundation for new unattended authority.
+- The public `/autofix` trigger lacks caller authorization and reaches PAT-backed dispatch;
+  the mutable shared AI runner inherits broadly available organization secrets and default
+  write/PR-approval authority. This path is NOT READY.
+- The legacy GitHub AI runner also has no repository-local behavioral evaluation contract.
 - Preview clone authentication can persist a credential value in temporary Git metadata.
 - Development-only dependencies have known high/critical audit findings.
 - The build emits a large-chunk warning for the approximately 616 kB JavaScript bundle.
-- Browser coverage exercises core desktop/mobile flows but is not a complete accessibility
-  audit, cross-browser matrix, or visual-regression suite.
+- The interactive canvas has no accessible name, role, focus target, or keyboard rotation;
+  the core interaction is inaccessible to keyboard-only users. Browser coverage also lacks
+  a complete accessibility audit, Firefox/WebKit matrix, and visual-regression suite.
 - The defect manifest's baseline-count prose is stale relative to the current 65 unit and
   14 browser tests.
 - The app deliberately does not persist state or solve arbitrary unknown-origin cubes.
