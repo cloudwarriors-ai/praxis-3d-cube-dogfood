@@ -31,6 +31,12 @@ on:
 
 jobs:
   run:
+    # Explicit token scope, so this job keeps working when the organization default becomes read-only.
+    permissions:
+      actions: read
+      contents: write
+      issues: write
+      pull-requests: write
     uses: cloudwarriors-ai/.github/.github/workflows/reusable-autopilot-runner.yml@codex/preview-gate-hold
     with:
       issue_number: ${{ inputs.issue_number }}
